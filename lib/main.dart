@@ -6,6 +6,7 @@ void main()
   runApp(
       new MaterialApp(
         title: "Agritech",
+
         home: home(),
         debugShowCheckedModeBanner: false,
 
