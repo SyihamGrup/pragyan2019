@@ -1,13 +1,19 @@
 import "dart:async";
 import "dart:convert";
-
 import 'package:firebase_database/firebase_database.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import "package:http/http.dart" as http;
-import 'package:weather/guidance.dart';
+import 'package:weather/crops.dart';
+import 'package:weather/cropRotation.dart';
+import 'package:weather/ferti.dart';
+import 'package:weather/iot.dart';
+import 'package:weather/mandi.dart';
+import 'package:weather/blog.dart';
 
 
 final FirebaseDatabase database=FirebaseDatabase.instance;
+
 
 class ChangeCity extends StatelessWidget {
   @override
@@ -84,13 +90,50 @@ class HomeState extends State<home> {
         }));
    // _city=results['enter'];
   }
+  Future _cropRotation(BuildContext context) async {
+    Map results = await Navigator.of(context).push(
+        new MaterialPageRoute<Map>(builder: (BuildContext context) {
+          return new CropRotation();
+        }));
+    // _city=results['enter'];
+  }
+  Future _iotDevices(BuildContext context) async {
+    Map results = await Navigator.of(context).push(
+        new MaterialPageRoute<Map>(builder: (BuildContext context) {
+          return new IotDevices();
+        }));
+    // _city=results['enter'];
+  }
+  Future _ferti(BuildContext context) async {
+    Map results = await Navigator.of(context).push(
+        new MaterialPageRoute<Map>(builder: (BuildContext context) {
+          return new Fertilizers();
+        }));
+    // _city=results['enter'];
+  }
+  Future _mandi(BuildContext context) async {
+    Map results = await Navigator.of(context).push(
+        new MaterialPageRoute<Map>(builder: (BuildContext context) {
+          return new Mandi();
+        }));
+    // _city=results['enter'];
+  }
+  Future _blog(BuildContext context) async {
+    Map results = await Navigator.of(context).push(
+        new MaterialPageRoute<Map>(builder: (BuildContext context) {
+          return new Blog();
+        }));
+    // _city=results['enter'];
+  }
+
 
   Widget build(BuildContext context) {
     return(new Scaffold(
         appBar: new AppBar(
           title: Text("Agritech",style:new TextStyle(
-            fontSize: 28.0,
-          )
+            fontSize: 24.0,
+          ),
+            textAlign: TextAlign.center,
           ),
           backgroundColor: Colors.lightGreen,
           actions: <Widget>[
@@ -99,10 +142,11 @@ class HomeState extends State<home> {
         ),
         body: new Stack(
           children: <Widget>[
-            new Image.asset("/Users/ashukumar/IdeaProjects/weather/images/background.jpg",
+
+            new Image.asset("images/background.jpg",
               width: 700.0,
               height:800.0,
-              fit: BoxFit.fitHeight,
+              fit: BoxFit.fill,
             ),
             new Container
               (alignment: Alignment.topRight,
@@ -117,7 +161,7 @@ class HomeState extends State<home> {
             ),
             new Container(
 //                alignment: Alignment.center,
-                child: new Image.asset("/Users/ashukumar/IdeaProjects/weather/images/light_rain.png",
+                child: new Image.asset("images/light_rain.png",
                   height: 300.0,width:400.0,)
             ),
             new Container
@@ -159,8 +203,13 @@ class HomeState extends State<home> {
     child: ListView(
     padding: EdgeInsets.zero,
       children: <Widget>[
+        //new Padding(padding: EdgeInsets.all(value))
         DrawerHeader(
-          child: Text('Menu'),
+          child: new Container(child:new Text("Menu",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 24.0),
+          ),
+          ),
+
           decoration: BoxDecoration(
             color: Colors.greenAccent,
           ),
@@ -183,10 +232,58 @@ class HomeState extends State<home> {
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 18.0)
           ),
           onTap: () {
+            _cropRotation(context);
             // Update the state of the app
             // ...
             // Then close the drawer
-            Navigator.pop(context);
+           // Navigator.pop(context);
+          },
+        ),
+        ListTile(
+          title: new Text("IOT Devices",
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 18.0)
+          ),
+          onTap: () {
+            _iotDevices(context);
+            // Update the state of the app
+            // ...
+            // Then close the drawer
+            // Navigator.pop(context);
+          },
+        ),
+        ListTile(
+          title: new Text("Fertilizers",
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 18.0)
+          ),
+          onTap: () {
+            _ferti(context);
+            // Update the state of the app
+            // ...
+            // Then close the drawer
+            // Navigator.pop(context);
+          },
+        ),ListTile(
+          title: new Text("Mandi",
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 18.0)
+          ),
+          onTap: () {
+            _mandi(context);
+            // Update the state of the app
+            // ...
+            // Then close the drawer
+            // Navigator.pop(context);
+          },
+        ),
+        ListTile(
+          title: new Text("Blog",
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 18.0)
+          ),
+          onTap: () {
+            _blog(context);
+            // Update the state of the app
+            // ...
+            // Then close the drawer
+            // Navigator.pop(context);
           },
         ),
       ],
@@ -195,11 +292,13 @@ class HomeState extends State<home> {
     ));
   }
 
-  submit_reminder() {
+  submit_reminder() async {
 setState(() {
-  database.reference().child("Message").set({" Reminder": "${_reminder.text}"});
+  var result=  database.reference().child("Message").set({" Reminder": "${_reminder.text}"});
+  print(_reminder.text);
   database.reference().once().then((DataSnapshot snapshot) {
-    reminder_text=snapshot.value.toString();
+    var reminder_text=snapshot.value;
+    print (reminder_text["Message"]);
   });
   _reminder.clear();
 });
@@ -260,7 +359,7 @@ Widget futurewidget (String city)
                 )),
                 leading: new CircleAvatar(
                   backgroundColor: Colors.redAccent,
-                  child: Text("T"),
+                  child: new Icon(Icons.wb_sunny),
                 ),
               ),
               new ListTile(
@@ -273,7 +372,7 @@ Widget futurewidget (String city)
                 ),
                 leading: new CircleAvatar(
                   backgroundColor: Colors.redAccent,
-                  child: Text("H"),
+                  child: new Icon(Icons.invert_colors),
                 ),)
               ,
               new ListTile(
@@ -286,7 +385,7 @@ Widget futurewidget (String city)
                 ),
                 leading: new CircleAvatar(
                   backgroundColor: Colors.redAccent,
-                  child: Text("W"),
+                  child: new Icon(Icons.swap_calls),
                 ),)
             ],
           )
@@ -300,7 +399,7 @@ Widget futurewidget (String city)
               new ListTile(
                 title: new Text("null °C", style: new TextStyle(
 
-                  fontSize: 28.0,
+                  fontSize: 22.0,
                   color: Colors.white,
                   fontWeight: FontWeight.normal,
                 )
@@ -312,7 +411,7 @@ Widget futurewidget (String city)
               new ListTile(
                 title: new Text("null g/m3", style: new TextStyle(
 
-                  fontSize: 28.0,
+                  fontSize: 22.0,
                   color: Colors.white,
                   fontWeight: FontWeight.normal,
                 )
@@ -325,7 +424,7 @@ Widget futurewidget (String city)
               new ListTile(
                 title: new Text("null km/h", style: new TextStyle(
 
-                  fontSize: 28.0,
+                  fontSize: 22.0,
                   color: Colors.white,
                   fontWeight: FontWeight.normal,
                 )
