@@ -2,6 +2,8 @@
 
 This project was created for Pragyan hack-a-thon. Cross platfrom application development using flutter for creating a farming solutions. It uses concepts such as material-theme , google authentication, firebase, Json parser, open weather API, Future page route , webview e.t.c 
 
+This repo has been visited [![HitCount](http://hits.dwyl.io/kin-kins/pragyan2019.svg)](http://hits.dwyl.io/kin-kins/pragyan2019) number of times!
+
 ## Getting Started
 
 For help getting started with Flutter, view our online
